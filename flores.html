@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para Ti 💜</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0a0a;
+            font-family: 'Cormorant Garamond', serif;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        #canvas-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #start-container {
+            position: absolute;
+            z-index: 10;
+            text-align: center;
+            opacity: 1;
+            transition: opacity 1s ease;
+        }
+
+        #start-container.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        h1 {
+            font-family: 'Dancing Script', cursive;
+            color: #c8a8e0;
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            text-shadow: 0 0 20px rgba(200, 168, 224, 0.4);
+            letter-spacing: 2px;
+        }
+
+        #start-button {
+            background: linear-gradient(135deg, #6b4c8f 0%, #9b6fb8 100%);
+            color: white;
+            border: 2px solid rgba(200, 168, 224, 0.3);
+            padding: 18px 45px;
+            font-size: 1.3rem;
+            font-family: 'Cormorant Garamond', serif;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            box-shadow: 0 8px 30px rgba(107, 76, 143, 0.5);
+            letter-spacing: 1px;
+            font-weight: 500;
+        }
+
+        #start-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(155, 111, 184, 0.7);
+            background: linear-gradient(135deg, #7b5c9f 0%, #ab7fc8 100%);
+        }
+
+        #start-button:active {
+            transform: translateY(-2px);
+        }
+
+        #message {
+            position: absolute;
+            bottom: 8%;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #c8a8e0;
+            font-size: 1.5rem;
+            text-align: center;
+            max-width: 85%;
+            line-height: 1.8;
+            opacity: 0;
+            transition: opacity 2s ease;
+            text-shadow: 0 0 15px rgba(200, 168, 224, 0.3);
+            font-weight: 300;
+            letter-spacing: 0.5px;
+        }
+
+        #message.show {
+            opacity: 1;
+        }
+
+        #message .highlight {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.1em;
+            color: #d4b8f0;
+            text-shadow: 0 0 20px rgba(212, 184, 240, 0.5);
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            #start-button {
+                padding: 15px 35px;
+                font-size: 1.1rem;
+            }
+            
+            #message {
+                font-size: 1.1rem;
+                max-width: 90%;
+                bottom: 5%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.6rem;
+            }
+            
+            #start-button {
+                padding: 12px 28px;
+                font-size: 1rem;
+            }
+            
+            #message {
+                font-size: 0.95rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="canvas-container">
+        <div id="start-container">
+            <h1>Un Delphinium para Ti</h1>
+            <button id="start-button" onclick="startAnimation()">Observar cómo nace</button>
+        </div>
+        <div id="message">
+            Estas flores <span class="highlight">no tienes por qué ponerlas en agua</span>,<br>
+            y quiero que te durén <span class="highlight">todo el tiempo que tengas memoria</span>.
+        </div>
+    </div>
+
+    <script>
+        let particles = [];
+        let animationStarted = false;
+        let animationProgress = 0;
+        let animationDuration = 12000;
+        let startTime;
+        let cnv;
+
+        class Particle {
+            constructor(x, y, targetX, targetY, color, size, delay, shape) {
+                this.x = x;
+                this.y = y;
+                this.targetX = targetX;
+                this.targetY = targetY;
+                this.color = color;
+                this.size = size;
+                this.delay = delay;
+                this.shape = shape;
+                this.alpha = 0;
+                this.hasStarted = false;
+            }
+
+            update(progress) {
+                if (progress > this.delay && !this.hasStarted) {
+                    this.hasStarted = true;
+                }
+
+                if (this.hasStarted) {
+                    let localProgress = (progress - this.delay) / (1 - this.delay);
+                    localProgress = constrain(localProgress, 0, 1);
+                    let eased = 1 - pow(1 - localProgress, 3.5);
+                    
+                    this.x = lerp(this.x, this.targetX, eased * 0.15);
+                    this.y = lerp(this.y, this.targetY, eased * 0.15);
+                    this.alpha = lerp(this.alpha, 255, eased * 0.1);
+                }
+            }
+
+            display() {
+                if (this.hasStarted) {
+                    push();
+                    let c = color(this.color);
+                    c.setAlpha(this.alpha);
+                    fill(c);
+                    noStroke();
+                    
+                    if (this.shape === 'circle') {
+                        circle(this.x, this.y, this.size);
+                    } else if (this.shape === 'ellipse') {
+                        ellipse(this.x, this.y, this.size * 0.8, this.size * 1.3);
+                    }
+                    pop();
+                }
+            }
+        }
+
+        function setup() {
+            cnv = createCanvas(windowWidth, windowHeight);
+            cnv.parent('canvas-container');
+            
+            let petalColors = [
+                color(156, 100, 180),
+                color(168, 120, 195),
+                color(145, 90, 170),
+                color(178, 140, 205)
+            ];
+            
+            let centerColor = color(245, 240, 250);
+            let stemColor = color(65, 95, 70);
+            let leafColor = color(80, 110, 85);
+
+            let centerX = width / 2;
+            let baseY = height * 0.75;
+            let topY = height * 0.2;
+            let spikeHeight = baseY - topY;
+
+            // Tallo vertical (400 partículas)
+            for (let i = 0; i < 400; i++) {
+                let progress = i / 400;
+                let y = map(progress, 0, 1, topY + spikeHeight * 0.15, baseY);
+                let thickness = map(progress, 0, 1, 3, 8);
+                let x = centerX + random(-thickness, thickness);
+                
+                particles.push(new Particle(
+                    centerX, baseY,
+                    x, y,
+                    stemColor,
+                    random(3, 6),
+                    random(0, 0.1),
+                    'circle'
+                ));
+            }
+
+            // Hojas (200 partículas - 4 hojas)
+            for (let i = 0; i < 4; i++) {
+                let leafY = map(i, 0, 3, baseY - spikeHeight * 0.25, baseY - spikeHeight * 0.5);
+                let side = i % 2 === 0 ? 1 : -1;
+                
+                for (let j = 0; j < 50; j++) {
+                    let lProgress = j / 50;
+                    let leafX = centerX + side * (8 + lProgress * 30);
+                    let leafYPos = leafY + lProgress * 20;
+                    
+                    particles.push(new Particle(
+                        centerX, baseY,
+                        leafX + random(-2, 2),
+                        leafYPos + random(-2, 2),
+                        leafColor,
+                        random(3, 6),
+                        random(0.1, 0.2),
+                        'ellipse'
+                    ));
+                }
+            }
+
+            // 12 flores principales distribuidas verticalmente
+            let numFlowers = 12;
+            
+            for (let f = 0; f < numFlowers; f++) {
+                let flowerProgress = f / numFlowers;
+                let y = map(flowerProgress, 0, 1, topY + spikeHeight * 0.2, topY + spikeHeight * 0.75);
+                
+                // Flores más pegadas al tallo, ligeramente alternadas
+                let offsetX = (f % 2 === 0 ? 15 : -15) + random(-5, 5);
+                let x = centerX + offsetX;
+                
+                let flowerSize = map(flowerProgress, 0, 1, 22, 16);
+                
+                // 5 pétalos por flor
+                for (let p = 0; p < 5; p++) {
+                    let angle = map(p, 0, 5, 0, TWO_PI) + random(-0.2, 0.2);
+                    let petalDist = flowerSize * 0.6;
+                    
+                    // Pétalos de diferentes tamaños
+                    for (let layer = 0; layer < 3; layer++) {
+                        let layerSize = map(layer, 0, 2, 1, 0.5);
+                        let px = x + cos(angle) * petalDist * layerSize;
+                        let py = y + sin(angle) * petalDist * layerSize * 0.8;
+                        
+                        let pColor = random(petalColors);
+                        let pSize = random(6, 10) * layerSize;
+                        
+                        // 4-6 partículas por pétalo
+                        let particlesPerPetal = floor(random(4, 7));
+                        for (let i = 0; i < particlesPerPetal; i++) {
+                            particles.push(new Particle(
+                                centerX, topY,
+                                px + random(-2, 2),
+                                py + random(-2, 2),
+                                pColor,
+                                pSize,
+                                map(flowerProgress, 0, 1, 0.15, 0.6) + random(-0.05, 0.05),
+                                random(['circle', 'ellipse'])
+                            ));
+                        }
+                    }
+                }
+                
+                // Centro de la flor (8-10 partículas)
+                for (let i = 0; i < floor(random(8, 11)); i++) {
+                    let r = random(0, 4);
+                    let a = random(TWO_PI);
+                    let cx = x + cos(a) * r;
+                    let cy = y + sin(a) * r;
+                    
+                    particles.push(new Particle(
+                        centerX, topY,
+                        cx, cy,
+                        centerColor,
+                        random(3, 6),
+                        map(flowerProgress, 0, 1, 0.2, 0.65),
+                        'circle'
+                    ));
+                }
+            }
+
+            // Botones florales superiores (150 partículas)
+            for (let i = 0; i < 4; i++) {
+                let budY = topY - i * 12;
+                let budX = centerX + (i % 2 === 0 ? 8 : -8);
+                
+                for (let j = 0; j < 35; j++) {
+                    let r = random(0, 6);
+                    let a = random(TWO_PI);
+                    let bx = budX + cos(a) * r;
+                    let by = budY + sin(a) * r * 1.2;
+                    
+                    particles.push(new Particle(
+                        centerX, topY,
+                        bx, by,
+                        color(130, 90, 150),
+                        random(3, 5),
+                        random(0.65, 0.85),
+                        'circle'
+                    ));
+                }
+            }
+
+            // Crear 4 ramos adicionales alrededor del principal
+            createAdditionalStem(centerX - 120, baseY, topY + 80, spikeHeight * 0.6, 0.85, -8);
+            createAdditionalStem(centerX + 120, baseY, topY + 100, spikeHeight * 0.55, 0.9, 10);
+            createAdditionalStem(centerX - 200, baseY, topY + 150, spikeHeight * 0.5, 0.75, -15);
+            createAdditionalStem(centerX + 200, baseY, topY + 140, spikeHeight * 0.52, 0.8, 12);
+
+            console.log(`Total de partículas: ${particles.length}`);
+        }
+
+        function createAdditionalStem(stemX, baseY, stemTopY, heightPortion, sizeScale, tiltAngle) {
+            let petalColors = [
+                color(156, 100, 180),
+                color(168, 120, 195),
+                color(145, 90, 170),
+                color(178, 140, 205)
+            ];
+            
+            let centerColor = color(245, 240, 250);
+            let stemColor = color(65, 95, 70);
+            let leafColor = color(80, 110, 85);
+
+            // Tallo secundario (250 partículas)
+            for (let i = 0; i < 250; i++) {
+                let progress = i / 250;
+                let y = map(progress, 0, 1, stemTopY + heightPortion * 0.15, baseY);
+                let thickness = map(progress, 0, 1, 2, 6) * sizeScale;
+                let x = stemX + random(-thickness, thickness) + progress * tiltAngle * 0.3;
+                
+                particles.push(new Particle(
+                    stemX, baseY,
+                    x, y,
+                    stemColor,
+                    random(2, 5) * sizeScale,
+                    random(0, 0.15),
+                    'circle'
+                ));
+            }
+
+            // Hojas (100 partículas - 2 hojas por tallo)
+            for (let i = 0; i < 2; i++) {
+                let leafY = map(i, 0, 1, baseY - heightPortion * 0.3, baseY - heightPortion * 0.5);
+                let side = i % 2 === 0 ? 1 : -1;
+                
+                for (let j = 0; j < 50; j++) {
+                    let lProgress = j / 50;
+                    let leafX = stemX + side * (6 + lProgress * 20) * sizeScale;
+                    let leafYPos = leafY + lProgress * 15;
+                    
+                    particles.push(new Particle(
+                        stemX, baseY,
+                        leafX + random(-2, 2),
+                        leafYPos + random(-2, 2),
+                        leafColor,
+                        random(2, 5) * sizeScale,
+                        random(0.15, 0.25),
+                        'ellipse'
+                    ));
+                }
+            }
+
+            // 8 flores por tallo secundario
+            let numFlowers = 8;
+            
+            for (let f = 0; f < numFlowers; f++) {
+                let flowerProgress = f / numFlowers;
+                let y = map(flowerProgress, 0, 1, stemTopY + heightPortion * 0.25, stemTopY + heightPortion * 0.8);
+                
+                let offsetX = (f % 2 === 0 ? 12 : -12) * sizeScale + random(-3, 3);
+                let x = stemX + offsetX + flowerProgress * tiltAngle * 0.4;
+                
+                let flowerSize = map(flowerProgress, 0, 1, 18, 13) * sizeScale;
+                
+                // 5 pétalos por flor
+                for (let p = 0; p < 5; p++) {
+                    let angle = map(p, 0, 5, 0, TWO_PI) + random(-0.2, 0.2);
+                    let petalDist = flowerSize * 0.6;
+                    
+                    for (let layer = 0; layer < 2; layer++) {
+                        let layerSize = map(layer, 0, 1, 1, 0.6);
+                        let px = x + cos(angle) * petalDist * layerSize;
+                        let py = y + sin(angle) * petalDist * layerSize * 0.8;
+                        
+                        let pColor = random(petalColors);
+                        let pSize = random(5, 8) * layerSize * sizeScale;
+                        
+                        // 3-4 partículas por pétalo
+                        let particlesPerPetal = floor(random(3, 5));
+                        for (let i = 0; i < particlesPerPetal; i++) {
+                            particles.push(new Particle(
+                                stemX, stemTopY,
+                                px + random(-1.5, 1.5),
+                                py + random(-1.5, 1.5),
+                                pColor,
+                                pSize,
+                                map(flowerProgress, 0, 1, 0.2, 0.65) + random(-0.05, 0.05),
+                                random(['circle', 'ellipse'])
+                            ));
+                        }
+                    }
+                }
+                
+                // Centro de la flor (6-8 partículas)
+                for (let i = 0; i < floor(random(6, 9)); i++) {
+                    let r = random(0, 3);
+                    let a = random(TWO_PI);
+                    let cx = x + cos(a) * r;
+                    let cy = y + sin(a) * r;
+                    
+                    particles.push(new Particle(
+                        stemX, stemTopY,
+                        cx, cy,
+                        centerColor,
+                        random(2.5, 5) * sizeScale,
+                        map(flowerProgress, 0, 1, 0.25, 0.7),
+                        'circle'
+                    ));
+                }
+            }
+
+            // Botones florales superiores (80 partículas)
+            for (let i = 0; i < 3; i++) {
+                let budY = stemTopY - i * 10;
+                let budX = stemX + (i % 2 === 0 ? 6 : -6) * sizeScale;
+                
+                for (let j = 0; j < 25; j++) {
+                    let r = random(0, 5) * sizeScale;
+                    let a = random(TWO_PI);
+                    let bx = budX + cos(a) * r;
+                    let by = budY + sin(a) * r * 1.2;
+                    
+                    particles.push(new Particle(
+                        stemX, stemTopY,
+                        bx, by,
+                        color(130, 90, 150),
+                        random(2.5, 4) * sizeScale,
+                        random(0.7, 0.9),
+                        'circle'
+                    ));
+                }
+            }
+        }
+
+        function draw() {
+            background(10);
+
+            if (animationStarted) {
+                let elapsed = millis() - startTime;
+                animationProgress = constrain(elapsed / animationDuration, 0, 1);
+
+                for (let p of particles) {
+                    p.update(animationProgress);
+                    p.display();
+                }
+
+                if (animationProgress >= 0.95) {
+                    document.getElementById('message').classList.add('show');
+                }
+            }
+        }
+
+        function startAnimation() {
+            animationStarted = true;
+            startTime = millis();
+            document.getElementById('start-container').classList.add('hidden');
+        }
+
+        function windowResized() {
+            resizeCanvas(windowWidth, windowHeight);
+        }
+    </script>
+</body>
+</html>

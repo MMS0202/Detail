@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Me encantas 💜</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+            transition: background 0.5s ease;
+        }
+
+        /* Tema claro */
+        body.light {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 30%, #e1bee7 70%, #ce93d8 100%);
+        }
+
+        /* Tema oscuro */
+        body.dark {
+            background: linear-gradient(135deg, #1a237e 0%, #311b92 30%, #4a148c 70%, #6a1b9a 100%);
+        }
+
+        /* Partículas flotantes */
+        .particle {
+            position: absolute;
+            font-size: 1.5rem;
+            opacity: 0;
+            animation: floatParticle 15s infinite ease-in-out;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body.light .particle {
+            color: #a18cd1;
+            text-shadow: 0 0 10px rgba(161, 140, 209, 0.5);
+        }
+
+        body.dark .particle {
+            color: #bb86fc;
+            text-shadow: 0 0 15px rgba(187, 134, 252, 0.8);
+        }
+
+        @keyframes floatParticle {
+            0% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.8; }
+            90% { opacity: 0.4; }
+            100% { transform: translateY(-120vh) translateX(50px) rotate(360deg); opacity: 0; }
+        }
+
+        /* Toggle de tema */
+        .theme-toggle {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            transition: all 0.3s ease;
+            z-index: 100;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1) rotate(15deg);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
+        }
+
+        body.dark .theme-toggle {
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(25px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 40px;
+            padding: 60px 50px;
+            max-width: 700px;
+            width: 100%;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.2), 
+                        inset 0 1px 1px rgba(255, 255, 255, 0.4);
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            transition: all 0.5s ease;
+        }
+
+        body.dark .container {
+            background: rgba(0, 0, 0, 0.25);
+            border: 2px solid rgba(187, 134, 252, 0.3);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5),
+                        inset 0 1px 1px rgba(187, 134, 252, 0.2);
+        }
+
+        h1 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 3rem;
+            margin-bottom: 40px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            transition: all 0.5s ease;
+        }
+
+        body.light h1 {
+            color: #4a148c;
+            text-shadow: 0 4px 20px rgba(74, 20, 140, 0.3),
+                         0 2px 5px rgba(161, 140, 209, 0.4);
+        }
+
+        body.dark h1 {
+            color: #e1bee7;
+            text-shadow: 0 4px 25px rgba(187, 134, 252, 0.6),
+                         0 2px 8px rgba(225, 190, 231, 0.5);
+        }
+
+        .reason-display {
+            border-radius: 30px;
+            padding: 50px 40px;
+            min-height: 220px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.5s ease;
+        }
+
+        body.light .reason-display {
+            background: linear-gradient(135deg, rgba(227, 242, 253, 0.6) 0%, rgba(225, 190, 231, 0.6) 100%);
+            box-shadow: 0 20px 50px rgba(79, 172, 254, 0.25),
+                        inset 0 -2px 15px rgba(255, 255, 255, 0.5);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+        }
+
+        body.dark .reason-display {
+            background: linear-gradient(135deg, rgba(49, 27, 146, 0.4) 0%, rgba(106, 27, 154, 0.4) 100%);
+            box-shadow: 0 20px 50px rgba(187, 134, 252, 0.3),
+                        inset 0 -2px 15px rgba(187, 134, 252, 0.2);
+            border: 2px solid rgba(187, 134, 252, 0.3);
+        }
+
+        .reason-display::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 60%);
+            animation: shimmer 8s linear infinite;
+        }
+
+        body.dark .reason-display::before {
+            background: radial-gradient(circle, rgba(187, 134, 252, 0.15) 0%, transparent 60%);
+        }
+
+        @keyframes shimmer {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        .reason-text {
+            font-size: 1.6rem;
+            line-height: 1.8;
+            font-style: italic;
+            opacity: 0;
+            transform: translateY(30px) scale(0.95);
+            transition: all 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            z-index: 1;
+            font-weight: 400;
+        }
+
+        body.light .reason-text {
+            color: #4a148c;
+            text-shadow: 0 2px 8px rgba(255, 255, 255, 0.6);
+        }
+
+        body.dark .reason-text {
+            color: #e1bee7;
+            text-shadow: 0 2px 10px rgba(187, 134, 252, 0.4);
+        }
+
+        .reason-text.show {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        button {
+            color: white;
+            border: none;
+            padding: 20px 50px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            font-weight: 600;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        body.light button {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 50%, #a18cd1 100%);
+            box-shadow: 0 10px 30px rgba(79, 172, 254, 0.5),
+                        0 4px 12px rgba(161, 140, 209, 0.3);
+        }
+
+        body.dark button {
+            background: linear-gradient(135deg, #bb86fc 0%, #7b1fa2 50%, #4a148c 100%);
+            box-shadow: 0 10px 30px rgba(187, 134, 252, 0.6),
+                        0 4px 12px rgba(74, 20, 140, 0.4);
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        button:hover::before {
+            width: 350px;
+            height: 350px;
+        }
+
+        button:hover {
+            transform: translateY(-6px) scale(1.03);
+        }
+
+        body.light button:hover {
+            box-shadow: 0 15px 40px rgba(79, 172, 254, 0.7),
+                        0 6px 18px rgba(161, 140, 209, 0.5);
+        }
+
+        body.dark button:hover {
+            box-shadow: 0 15px 40px rgba(187, 134, 252, 0.8),
+                        0 6px 18px rgba(74, 20, 140, 0.6);
+        }
+
+        button:active {
+            transform: translateY(-3px) scale(1);
+        }
+
+        button span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .history {
+            margin-top: 50px;
+            text-align: left;
+        }
+
+        .history h2 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            font-weight: 600;
+            transition: all 0.5s ease;
+        }
+
+        body.light .history h2 {
+            color: #4a148c;
+            text-shadow: 0 3px 12px rgba(74, 20, 140, 0.3);
+        }
+
+        body.dark .history h2 {
+            color: #e1bee7;
+            text-shadow: 0 3px 15px rgba(187, 134, 252, 0.5);
+        }
+
+        .history-list {
+            backdrop-filter: blur(12px);
+            border-radius: 25px;
+            padding: 25px;
+            max-height: 280px;
+            overflow-y: auto;
+            transition: all 0.5s ease;
+        }
+
+        body.light .history-list {
+            background: rgba(255, 255, 255, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: inset 0 2px 12px rgba(79, 172, 254, 0.1);
+        }
+
+        body.dark .history-list {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(187, 134, 252, 0.3);
+            box-shadow: inset 0 2px 12px rgba(187, 134, 252, 0.15);
+        }
+
+        .history-item {
+            padding: 18px;
+            margin-bottom: 15px;
+            backdrop-filter: blur(5px);
+            border-radius: 18px;
+            font-size: 0.95rem;
+            border-left: 4px solid transparent;
+            animation: slideIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: all 0.4s ease;
+            line-height: 1.6;
+        }
+
+        body.light .history-item {
+            background: rgba(255, 255, 255, 0.6);
+            color: #4a148c;
+            border-image: linear-gradient(135deg, #4facfe, #a18cd1) 1;
+            box-shadow: 0 6px 20px rgba(79, 172, 254, 0.15);
+        }
+
+        body.dark .history-item {
+            background: rgba(187, 134, 252, 0.15);
+            color: #e1bee7;
+            border-image: linear-gradient(135deg, #bb86fc, #4a148c) 1;
+            box-shadow: 0 6px 20px rgba(187, 134, 252, 0.2);
+        }
+
+        .history-item:hover {
+            transform: translateX(8px);
+        }
+
+        body.light .history-item:hover {
+            box-shadow: 0 8px 25px rgba(79, 172, 254, 0.3);
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        body.dark .history-item:hover {
+            box-shadow: 0 8px 25px rgba(187, 134, 252, 0.35);
+            background: rgba(187, 134, 252, 0.25);
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .heart {
+            display: inline-block;
+            animation: heartbeat 1.8s ease-in-out infinite;
+            transition: all 0.5s ease;
+        }
+
+        body.light .heart {
+            filter: drop-shadow(0 0 12px rgba(161, 140, 209, 0.6));
+        }
+
+        body.dark .heart {
+            filter: drop-shadow(0 0 18px rgba(187, 134, 252, 0.8));
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            25% { transform: scale(1.2); }
+            50% { transform: scale(1); }
+        }
+
+        /* Scrollbar personalizado */
+        .history-list::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        body.light .history-list::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+        }
+
+        body.dark .history-list::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+        }
+
+        body.light .history-list::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #4facfe, #a18cd1);
+            border-radius: 10px;
+        }
+
+        body.dark .history-list::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #bb86fc, #4a148c);
+            border-radius: 10px;
+        }
+
+        body.light .history-list::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #00f2fe, #764ba2);
+        }
+
+        body.dark .history-list::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #d1a3ff, #6a1b9a);
+        }
+
+        .signature {
+            margin-top: 30px;
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.3rem;
+            font-style: italic;
+            transition: all 0.5s ease;
+        }
+
+        body.light .signature {
+            color: #7b1fa2;
+            text-shadow: 0 2px 8px rgba(123, 31, 162, 0.3);
+        }
+
+        body.dark .signature {
+            color: #bb86fc;
+            text-shadow: 0 2px 10px rgba(187, 134, 252, 0.5);
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 40px 30px;
+            }
+            h1 {
+                font-size: 2.2rem;
+            }
+            .reason-text {
+                font-size: 1.3rem;
+            }
+            button {
+                padding: 16px 40px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body class="light">
+    <div class="theme-toggle" onclick="toggleTheme()" title="Cambiar tema">
+        <span id="themeIcon">🌙</span>
+    </div>
+
+    <div class="container">
+        <h1>Incontables razones por las que me encantas <span class="heart">💜</span></h1>
+        
+        <div class="reason-display">
+            <p class="reason-text" id="reasonText">Haz clic en el botón para descubrir una razón...</p>
+        </div>
+        
+        <button onclick="showReason()"><span>Dame otra razón</span></button>
+        
+        <div class="signature">— Con todo lo que mi corazón puede darte, cariño mio 💕</div>
+        
+        <div class="history">
+            <h2>Últimas razones mostradas:</h2>
+            <div class="history-list" id="historyList">
+                <p style="text-align: center; opacity: 0.6;">Aún no hay historial</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const baseReasons = [
+            "Amo cómo me miras cuando pruebas todo lo que cocino",
+            "Tu risa es mi sonido favorito",
+            "Adoro la forma en que te emocionas por las pequeñas cosas",
+            "Me encanta cómo me abrazas cuando descansamos,como si no quisieras soltarme nunca",
+            "Amo tu manera de entender mis silencios",
+            "Tu sonrisa ilumina hasta mis días más oscuros",
+            "Amo cómo la forma en la que me haces sentir seguro",
+            "Me fascina tu pasión por las cosas que amas",
+            "Adoro cuando cantas sin darte cuenta",
+            "Amo tu forma única de ver el mundo",
+            "Me encanta cómo me apoyas en casi todo, si es que no tiene que ver con dañarme",
+            "Amo tus abrazos por la mañana",
+            "Realmente tu bondad si hace de este mundo al menos un poco mejor",
+            "Amo cómo me haces sacar una sonrisa tonta incluso en mis peores dias",
+            "Me encanta la forma en que dices mi nombre, aunque me encantaria que me dijeras de alguna manera unica",
+            "Amo tu inteligencia y tu curiosidad por el mundo y lo que te rodea",
+            "Adoro cómo te preocupas por los demás",
+            "Amo cada conversación que tenemos, por mas minima o estupida que sea",
+            "Me fascina tu determinación para alcanzar todo lo que te propones",
+            "Amo cómo haces que los momentos simples sean especiales",
+            "Tu paciencia conmigo es infinita y hermosa, haces ver que el convivir conmigo es sencillo",
+            "Amo tu forma de bailar cuando estás feliz, cuando disfrutas del ambiente",
+            "Me encanta cómo me conoces mejor que nadie, incluso queriendo la parte mas oscura de mi",
+            "Amo tu espontaneidad y aventuras improvisadas, por que planear no es lo nuestro",
+            "Adoro la paz que siento cuando estoy contigo, entre tus brazos, entre tu pecho, entre tus piernas, contigo totalmente",
+            "Amo cómo me inspiras a ser menos mierda de persona",
+            "Me fascina tu creatividad",
+            "Amo tus ojos, como dos esmeraldas con el brillo espejo mas espectacular que jamas he visto y todo lo que expresan sin palabras",
+            "Adoro cómo me escuchas de verdad",
+            "Amo tu sentido del humor único",
+            "Me encanta cómo te sonrojas cuando soy algo mas romantico",
+            "Amo que tu generosidad puede no tener límites",
+            "Adoro cómo te preocupas por mi bienestar",
+            "Amo la forma en que me haces sentir querido, amado, realmente tener a alguien por quien llegar a casa",
+            "Me fascina tu fuerza de voluntad con absolutamente todo",
+            "Amo cómo compartes tus sueños conmigo",
+            "Adoro darte los buenos dias y esperar ese mensaje de Buenas cada que lo hago",
+            "Amo tu honestidad incluso cuando es difícil",
+            "Me encanta cómo celebras mis logros como si fueran tuyos",
+            "Amo tu forma de acariciar mi cabello cuando nos acurrucamos",
+            "Adoro cómo me haces sentir especial cada día, incluso sabiendo el tipo de ser humano que soy",
+            "Amo tu valentía para enfrentar todo lo que tu suerte te trae",
+            "Me fascina cómo me complementas perfectamente",
+            "Amo tus besos que curan y prenden todo en cualquier momento",
+            "Adoro cómo confiamos el uno en el otro",
+            "Amo tu ternura en los momentos más inesperados",
+            "Me encanta cómo construimos una parte de nuestros sueños juntos",
+            "Amo tu empatía y comprensión",
+            "Adoro cómo me haces creer que no toda la gente es tan mala, o que solo hay una mujer en toda la existencia que vale cada átomo de mi cuerpo",
+            "Amo que seas tú, simplemente tú",
+            "Me fascina cómo cada día contigo es un, que cualquier cosa suceda",
+            "Amo la forma en que nuestras manos encajan perfectamente, en la que mi mano completa tu muslo o tambien la forma en la que enncajan perfectamente sobre tus mejillas",
+            "Adoro cómo respetas mis espacios y mis tiempos, tu paciencia es inigualable",
+            "Amo tu voz cuando me dices que me extrañas, que te hago falta, que de alguna u otra manera me necesitas",
+            "Amo cómo tus manos acarician las mías cuando me acerco sin pensarlo",
+            "Me encanta la calma que me transmites cuando todo afuera parece caos y parezca que va a ser la ultima vez que te vea",
+            "Adoro la forma en que tus ojos me hablan sin necesidad de palabras",
+            "Amo cómo tu piel guarda el calor perfecto para mis inviernos internos, aunque no te guste cuando tengo las manos frias",
+            "Me fascina tu manera de sorprenderme con detalles que parecen mínimos pero me llenan el alma",
+            "Amo cómo tu voz se convierte en un muy buen energizante cuando estoy en las ultimas",
+            "Me encanta que siempre encuentres una razón para hacerme reír, incluso cuando no quiero",
+            "Adoro cómo tu presencia convierte cualquier lugar en hogar",
+            "Amo la forma en que me miras como si yo fuera tu secreto favorito",
+            "Me fascina tu capacidad de transformar mis preocupaciones en una tarea mas",
+            "Me encanta que tu curiosidad me contagie y me haga ver el mundo distinto",
+            "Adoro cómo tu energía me levanta cuando siento que no puedo más",
+            "Amo la forma en que tu sinceridad me obliga a ser mejor",
+            "Me fascina cómo tu risa se queda resonando en mi cabeza como eco feliz",
+            "Amo que tu paciencia me enseñe a respirar más despacio en muchos escenarios",
+            "Me encanta cómo tu mirada me devuelve la fe en mí mismo",
+            "Adoro que tu forma de amar no tenga condiciones, ni límites, ni formas",
+            "Amo cómo tu silencio me acompaña sin incomodarme",
+            "Me fascina que tu manera de soñar de querer las cosas haga parecer lo mas irreal en una posible oportunidad",
+            "Amo cómo tu piel guarda memorias de cada caricia",
+            "Me encanta que tu espontaneidad me saque de mi rutina",
+            "Adoro cómo tu ternura se mezcla con la fuerza que tiene, mi mujer",
+            "Amo la forma en que tu alegría contagia hasta a los más serios",
+            "Me fascina cómo tu voz se convierte en canción cuando me hablas bajito",
+            "Amo que tu forma de caminar me inspire a seguirte siempre",
+            "Me encanta cómo tu esencia se queda impregnada en todo lo que tocas",
+            "Adoro que tu forma de escuchar me haga sentir mas acompañado y no como una simple herramienta",
+            "Amo cómo tu valentía me recuerda que no estoy solo",
+            "Me fascina que tu forma de amar sea tan libre y tan tuya.",
+            "Amo cómo tu olor se convierte en mi lugar seguro",
+            "Me encanta que tu ternura me desarme en segundos",
+            "Adoro cómo tu forma de pensar me abre caminos nuevos",
+            "Amo la manera en que tu risa rompe cualquier tristeza",
+            "Me fascina cómo tu mirada me desnuda sin tocarme",
+            "Amo que tu forma de cuidarme sea tan natural como respirar",
+            "Me encanta cómo tu energía me envuelve como un abrazo invisible",
+            "Adoro que tu forma de hablar me haga sentir que todo tiene sentido, hasta lo mas absurdo",
+            "Amo cómo tu presencia convierte cualquier momento en recuerdo eterno",
+            "Me fascina que tu forma de querer sea mi mejor lección de vida y el aprender a cuidarte",
+            "Amo cómo tu piel se eriza cuando respiro en tu cuello o toco tus piernas",
+            "Me encanta que tu ternura aparezca incluso en tus enojos",
+            "Adoro cómo tu forma de mirarme me hace sentir único",
+            "Me fascina cómo tu alegría se convierte en mi medicina",
+            "Amo que tu forma de abrazar que aunque sean pocas, sea mi escudo contra el mundo",
+            "Me encanta cómo tu esencia se queda conmigo incluso cuando no estás",
+            "Adoro que tu forma de amar me enseñe a amarte mejor",
+            "Amo cómo tu sonrisa me recuerda que la vida vale la pena",
+            "Me fascina que tu forma de existir sea parte de mi dia a dia"
+        ];
+
+        let allReasons = [...baseReasons];
+        let history = [];
+        let lastGeneration = null;
+
+        // Generar partículas flotantes
+        function createParticles() {
+            const body = document.body;
+            const particles = ['💜', '💙', '✨', '💫', '🌟', '💕'];
+            
+            for (let i = 0; i < 15; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.textContent = particles[Math.floor(Math.random() * particles.length)];
+                particle.style.left = Math.random() * 100 + 'vw';
+                particle.style.animationDelay = Math.random() * 15 + 's';
+                particle.style.fontSize = (1 + Math.random() * 1.5) + 'rem';
+                body.appendChild(particle);
+            }
+        }
+
+        // Toggle tema
+        function toggleTheme() {
+            const body = document.body;
+            const themeIcon = document.getElementById('themeIcon');
+            
+            if (body.classList.contains('light')) {
+                body.classList.remove('light');
+                body.classList.add('dark');
+                themeIcon.textContent = '☀️';
+                saveTheme('dark');
+            } else {
+                body.classList.remove('dark');
+                body.classList.add('light');
+                themeIcon.textContent = '🌙';
+                saveTheme('light');
+            }
+        }
+
+        // Guardar tema preferido
+        function saveTheme(theme) {
+            localStorage.setItem('preferredTheme', theme);
+        }
+
+        // Cargar tema preferido
+        function loadTheme() {
+            const theme = localStorage.getItem('preferredTheme') || 'light';
+            const body = document.body;
+            const themeIcon = document.getElementById('themeIcon');
+            
+            body.classList.remove('light', 'dark');
+            body.classList.add(theme);
+            themeIcon.textContent = theme === 'dark' ? '☀️' : '🌙';
+        }
+
+        // Cargar datos guardados
+        function loadData() {
+            const saved = localStorage.getItem('loveReasonsData');
+            if (saved) {
+                const data = JSON.parse(saved);
+                allReasons = data.reasons || [...baseReasons];
+                history = data.history || [];
+                lastGeneration = data.lastGeneration || null;
+                updateHistoryDisplay();
+            }
+        }
+
+        // Guardar datos
+        function saveData() {
+            const data = {
+                reasons: allReasons,
+                history: history,
+                lastGeneration: lastGeneration
+            };
+            localStorage.setItem('loveReasonsData', JSON.stringify(data));
+        }
+
+        // Generar nuevas razones diariamente
+        function generateNewReasons() {
+            const today = new Date().toDateString();
+            
+            if (lastGeneration === today) {
+                return;
+            }
+
+            const templates = [
+                "Amo cuando {acción}",
+                "Me fascina tu manera de {cualidad}",
+                "Adoro cómo {sentimiento}",
+                "Tu {característica} me hace tan feliz",
+                "Me encanta que {razón}"
+            ];
+
+            const actions = ["me sorprendes", "me cuidas", "me entiendes", "me valoras"];
+            const qualities = ["ser auténtico(a)", "expresarte", "amar", "soñar"];
+            const feelings = ["me haces sentir único(a)", "iluminas mi vida", "me das paz"];
+            const characteristics = ["ternura", "alegría", "amor incondicional", "sabiduría"];
+            const reasons = ["seas mi mejor amigo(a)", "compartas tu vida conmigo", "me elijas cada día"];
+
+            for (let i = 0; i < 3; i++) {
+                const template = templates[Math.floor(Math.random() * templates.length)];
+                let newReason = template;
+                
+                if (template.includes("{acción}")) {
+                    newReason = newReason.replace("{acción}", actions[Math.floor(Math.random() * actions.length)]);
+                } else if (template.includes("{cualidad}")) {
+                    newReason = newReason.replace("{cualidad}", qualities[Math.floor(Math.random() * qualities.length)]);
+                } else if (template.includes("{sentimiento}")) {
+                    newReason = newReason.replace("{sentimiento}", feelings[Math.floor(Math.random() * feelings.length)]);
+                } else if (template.includes("{característica}")) {
+                    newReason = newReason.replace("{característica}", characteristics[Math.floor(Math.random() * characteristics.length)]);
+                } else if (template.includes("{razón}")) {
+                    newReason = newReason.replace("{razón}", reasons[Math.floor(Math.random() * reasons.length)]);
+                }
+                
+                allReasons.push(newReason);
+            }
+
+            lastGeneration = today;
+            saveData();
+        }
+
+        function showReason() {
+            generateNewReasons();
+            
+            const reasonText = document.getElementById('reasonText');
+            
+            reasonText.classList.remove('show');
+            
+            setTimeout(() => {
+                const randomIndex = Math.floor(Math.random() * allReasons.length);
+                const reason = allReasons[randomIndex];
+                
+                reasonText.textContent = reason;
+                
+                history.unshift(reason);
+                if (history.length > 5) {
+                    history = history.slice(0, 5);
+                }
+                
+                saveData();
+                updateHistoryDisplay();
+                
+                setTimeout(() => {
+                    reasonText.classList.add('show');
+                }, 50);
+            }, 350);
+        }
+
+        function updateHistoryDisplay() {
+            const historyList = document.getElementById('historyList');
+            
+            if (history.length === 0) {
+                historyList.innerHTML = '<p style="text-align: center; opacity: 0.6;">Aún no hay historial</p>';
+                return;
+            }
+            
+            historyList.innerHTML = history.map(reason => 
+                `<div class="history-item">${reason}</div>`
+            ).join('');
+        }
+
+        // Inicializar
+        loadTheme();
+        loadData();
+        createParticles();
+        
+        setTimeout(() => {
+            document.getElementById('reasonText').classList.add('show');
+        }, 500);
+    </script>
+</body>
+</html>
